@@ -51,7 +51,7 @@ POP = 0b01000110  # pop from stack
 PRN = 0b01000111  # print number
 PRA = 0b01001000  # print alpha character
 
-ALU = {ADD, SUB, MUL, DIV, MOD, INC, DEC, CMP, AND, NOT, OR, XOR, SHL, SHR}
+ALU = {ADD, SUB, MUL, DIV, MOD, CMP, AND, NOT, OR, XOR, SHL, SHR}
 
 
 class CPU:
@@ -63,6 +63,9 @@ class CPU:
         self.reg = [0] * 8
         self.pc = 0
         self.reg[8-1] = 0xF4
+        self.E = None
+        self.G = None
+        self.L = None
 
     def load(self, file_name):
         """Load a program into memory."""
@@ -106,31 +109,21 @@ class CPU:
             self.reg[reg_a] /= self.reg[reg_b]
         elif op == MOD:
             self.reg[reg_a] %= self.reg[reg_b]
-        elif op == INC:
-            if reg_a:
-                reg_a += 1
-            else:
-                reg_b += 1
-        elif op == DEC:
-            if reg_a:
-                reg_a -= 1
-            else:
-                reg_b -= 1
         elif op == CMP:
             if self.reg[reg_a] == self.reg[reg_b]:
-                self.JEQ = 1
+                self.E = 1
             else:
-                self.JEQ = 0
+                self.E = 0
 
             if self.reg[reg_a] < self.reg[reg_b]:
-                self.JLT = 1
+                self.L = 1
             else:
-                self.JLT = 0
+                self.L = 0
 
             if self.reg[reg_a] > self.reg[reg_b]:
-                self.JGT = 1
+                self.G = 1
             else:
-                self.JGT = 0
+                self.G = 0
 
         elif op == AND:
             self.reg[reg_a] &= self.reg[reg_b]
@@ -213,6 +206,29 @@ class CPU:
                 self.handle_ret()
             elif inst is NOP:
                 self.pc += 1
+            elif inst is INC:
+                reg_a = self.ram_read(pc + 1)
+                self.handle_inc(inst, reg_a)
+                self.pc += 2
+            elif inst is DEC:
+                reg_a = self.ram_read(pc + 1)
+                self.handle_inc(inst, reg_a)
+                self.pc += 2
+            elif inst is JMP:
+                operand = self.ram_read(pc + 1)
+                self.pc = self.reg[operand]
+            elif inst is JNE:
+                if self.E is 0:
+                    operand = self.ram_read(pc + 1)
+                    self.pc = self.reg[operand]
+                else:
+                    self.pc += 2
+            elif inst is JEQ:
+                if self.E is 1:
+                    operand = self.ram_read(pc + 1)
+                    self.pc = self.reg[operand]
+                else:
+                    self.pc += 2
             else:
                 self.trace() 
                  
@@ -277,3 +293,11 @@ class CPU:
         ret_address = self.ram[sp] 
         self.reg[7] += 1
         self.pc = ret_address
+
+    def handle_inc(self, op, reg_a):
+        if op == INC:
+            reg_a += 1
+
+    def handle_dec(self, op, reg_a):
+        if op == DEC:
+            reg_a -= 1
