@@ -47,11 +47,22 @@ Options for submission, whichever is easier for you:
 
 Your finished project must include all of the following requirements:
 
-- [ ] Add the `CMP` instruction and `equal` flag to your LS-8.
+- [x] Add the `CMP` instruction and `equal` flag to your LS-8.
 
 - [ ] Add the `JMP` instruction.
 
 - [ ] Add the `JEQ` and `JNE` instructions.
+
+## Questions
+1. The CALL instruction doesn't allow you to pass any arguments. What are some ways to effectively get arguments to a subroutine?
+By pushing to the parameters to the stack and poping them out once the call is made.
+2. What's the result of bitwise-AND between `0b110` and `0b011`?
+    `0b110`
+and `0b011`
+------------
+    `0b010` 
+
+3. Convert the 8-bit binary number 0b11010 to hex. 16:1 0x10 8:1 + 4:0 + 2:1 1:0 8 + 2 = 0xA : 0b11010 = 0x1A
 
 [See the LS-8 spec for details](https://github.com/LambdaSchool/Computer-Architecture/blob/master/LS8-spec.md)
 
@@ -168,7 +179,7 @@ goals may or may not be things you have learned in this module but they build on
 the material you just studied. Time allowing, stretch your limits and see if you
 can deliver on the following optional goals:
 
-- [ ] Add the ALU operations: `AND` `OR` `XOR` `NOT` `SHL` `SHR` `MOD`
+- [x] Add the ALU operations: `AND` `OR` `XOR` `NOT` `SHL` `SHR` `MOD`
 - [ ] Add an `ADDI` extension instruction to add an immediate value to a register
 - [ ] Add timer interrupts
 - [ ] Add keyboard interrupts
